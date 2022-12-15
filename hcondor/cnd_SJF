@@ -1,0 +1,36 @@
+Executable = /nfs/cms/vazqueze/ttbaranalisis/hcondor/run_SJF.sh
+
+requirements = stringListIMember("DCACHE_NFS", TARGET.WN_property, ",")
+
+request_cpus=4
+
+Log    = secondjetflavour$(ClusterId).$(ProcId).log
+Output = secondjetflavour$(ClusterId).$(ProcId).out
+Error  = secondjetflavour$(ClusterId).$(ProcId).err
+
+queue arguments from (
+  ttbar 2018 mc SV
+  ttbar 2017 mc SV
+  ttbar 2016 mc SV
+  ttbar 2016B mc SV
+  ttbar 2018 mc
+  ttbar 2017 mc
+  ttbar 2016 mc
+  ttbar 2016B mc
+  ttbarlep 2018 mc SV
+  ttbarlep 2017 mc SV
+  ttbarlep 2016 mc SV
+  ttbarlep 2016B mc SV
+  ttbarlep 2018 mc
+  ttbarlep 2017 mc
+  ttbarlep 2016 mc
+  ttbarlep 2016B mc
+  ttbarhad 2018 mc SV
+  ttbarhad 2017 mc SV
+  ttbarhad 2016 mc SV
+  ttbarhad 2016B mc SV
+  ttbarhad 2018 mc
+  ttbarhad 2017 mc
+  ttbarhad 2016 mc
+  ttbarhad 2016B mc
+)

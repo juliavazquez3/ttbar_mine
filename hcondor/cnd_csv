@@ -1,0 +1,11 @@
+Executable = /nfs/cms/vazqueze/ttbaranalisis/hcondor/run_csv.sh
+
+requirements = stringListIMember("DCACHE_NFS", TARGET.WN_property, ",")
+
+request_cpus=1
+
+Log    = csvconv$(ClusterId).$(ProcId).log
+Output = csvconv$(ClusterId).$(ProcId).out
+Error  = csvconv$(ClusterId).$(ProcId).err
+
+queue arguments from ()

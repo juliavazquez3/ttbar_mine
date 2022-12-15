@@ -1,0 +1,36 @@
+Executable = /nfs/cms/vazqueze/ttbaranalisis/hcondor/run_fromJF.sh
+
+requirements = stringListIMember("DCACHE_NFS", TARGET.WN_property, ",")
+
+request_cpus=4
+
+Log    = fromJF$(ClusterId).$(ProcId).log
+Output = fromJF$(ClusterId).$(ProcId).out
+Error  = fromJF$(ClusterId).$(ProcId).err
+
+queue arguments from (
+  allMC 2016 mc SL
+  M 2016 data SL
+  E 2016 data SL
+  allMC 2016 mc SL SSOS
+  M 2016 data SL SSOS
+  E 2016 data SL SSOS
+  allMC 2018 mc SL
+  M 2018 data SL
+  E 2018 data SL
+  allMC 2018 mc SL SSOS
+  M 2018 data SL SSOS
+  E 2018 data SL SSOS
+  allMC 2016B mc SL
+  M 2016B data SL
+  E 2016B data SL
+  allMC 2016B mc SL SSOS
+  M 2016B data SL SSOS
+  E 2016B data SL SSOS
+  allMC 2017 mc SL
+  M 2017 data SL
+  E 2017 data SL
+  allMC 2017 mc SL SSOS
+  M 2017 data SL SSOS
+  E 2017 data SL SSOS
+)
