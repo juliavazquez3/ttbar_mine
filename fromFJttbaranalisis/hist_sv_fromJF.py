@@ -67,8 +67,8 @@ samplesHT = ["ww","wjets_2_light","wjets_2_bottom","wjets_1_charm","wjets_1_doub
         "wjets_5_light","wjets_5_bottom","wjets_5_charm","wjets_5_doublecharm","wjets_6_light","wjets_6_bottom","wjets_6_charm","wjets_6_doublecharm",
         "wjets_7_light","wjets_7_bottom","wjets_7_charm","wjets_7_doublecharm","wjets_8_light","wjets_8_bottom","wjets_8_charm","wjets_8_doublecharm",
         "ttbar_sl_charm","ttbar_sl_nocharm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets_1",
-        "zjets_2","zjets_3","zjets_4","zjets_5","zjets_6","zjets_7","zjets_8","wz","zz","st_1_charm","st_2_charm","st_3_charm","st_4_charm","st_1_nocharm",
-        "st_2_nocharm","st_3_nocharm","st_4_nocharm"]
+        "zjets_2","zjets_3","zjets_4","zjets_5","zjets_6","zjets_7","zjets_8","wz","st_1_charm","st_2_charm","st_3_charm","st_4_charm","st_1_nocharm",
+        "st_2_nocharm","st_3_nocharm","st_4_nocharm","zz"]
 
 ## Adding QCD
 
@@ -592,8 +592,8 @@ for name in histNames:
   leg.AddEntry(histT["wjets_light"],"W plus jets, light","f")
   leg.AddEntry(histT["st_nocharm"],"Single top, not charm","f")
   leg.AddEntry(histT["st_charm"],"Single top, charm","f")
-  leg.AddEntry(histT["ttbar_sl_nocharm"],"Top antitop, charm","f")
-  leg.AddEntry(histT["ttbar_sl_charm"],"Top antitop, no charm","f")
+  leg.AddEntry(histT["ttbar_sl_nocharm"],"Top antitop, no charm","f")
+  leg.AddEntry(histT["ttbar_sl_charm"],"Top antitop, charm","f")
   if (args.qcd and name[-1] == "M"): leg.AddEntry(histT["QCD"],"QCD","f")
   if args.stack and not args.nodata: leg.AddEntry(data, "Data" ,"lep")
   leg.Draw()
@@ -618,7 +618,7 @@ for name in histNames:
 
 for s in samplesHT:
         for data_op in datayears:
-                        histFile[s][data_op].Close()
+                        histFile[data_op][s].Close()
 
 for data_op in datayears:
 	histFileD[data_op]["M"].Close()

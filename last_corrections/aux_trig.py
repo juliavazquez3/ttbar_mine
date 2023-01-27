@@ -42,7 +42,7 @@ for i,iabseta in enumerate(file_32016["data"]["content"]):
    # if i == 0:
    # dict_to_cpp += "{%s, %s} " % (value[0], value[1])
    # break
-     dict_to_cpp2016 += "%s %s" % (ipt["content"][5]["value"],
+     dict_to_cpp2016 += "{%s, %s}%s" % (pt_edges2016[j], ipt["content"][5]["value"],
          (", " if j < len(iabseta["content"]) - 1 else ""))
    dict_to_cpp2016 += "}}%s" % (", " if i < len(file_32016["data"]["content"]) - 1 else "")
 dict_to_cpp2016 += "}"
@@ -54,7 +54,7 @@ for i,iabseta in enumerate(file_32016B["data"]["content"]):
    # if i == 0:
    # dict_to_cpp += "{%s, %s} " % (value[0], value[1])
    # break
-     dict_to_cpp2016B += "%s %s" % (ipt["content"][5]["value"],
+     dict_to_cpp2016B += "{%s, %s}%s" % (pt_edges2016B[j], ipt["content"][5]["value"],
          (", " if j < len(iabseta["content"]) - 1 else ""))
    dict_to_cpp2016B += "}}%s" % (", " if i < len(file_32016B["data"]["content"]) - 1 else "")
 dict_to_cpp2016B += "}"
@@ -66,7 +66,7 @@ for i,iabseta in enumerate(file_32017["data"]["content"]):
    # if i == 0:
    # dict_to_cpp += "{%s, %s} " % (value[0], value[1])
    # break
-     dict_to_cpp2017 += "%s %s" % (ipt["content"][5]["value"],
+     dict_to_cpp2017 += "{%s, %s}%s" % (pt_edges2017[j], ipt["content"][5]["value"],
          (", " if j < len(iabseta["content"]) - 1 else ""))
    dict_to_cpp2017 += "}}%s" % (", " if i < len(file_32017["data"]["content"]) - 1 else "")
 dict_to_cpp2017 += "}"
@@ -78,10 +78,19 @@ for i,iabseta in enumerate(file_32018["data"]["content"]):
    # if i == 0:
    # dict_to_cpp += "{%s, %s} " % (value[0], value[1])
    # break
-     dict_to_cpp2018 += "%s %s" % (ipt["content"][5]["value"],
+     dict_to_cpp2018 += "{%s, %s}%s" % (pt_edges2018[j], ipt["content"][5]["value"],
          (", " if j < len(iabseta["content"]) - 1 else ""))
    dict_to_cpp2018 += "}}%s" % (", " if i < len(file_32018["data"]["content"]) - 1 else "")
 dict_to_cpp2018 += "}"
+
+print("2016")
+print(dict_to_cpp2016)
+print("2016B")
+print(dict_to_cpp2016B)
+print("2017")
+print(dict_to_cpp2017)
+print("2018")
+print(dict_to_cpp2018)
 
 # Funciones para los sf del trigger
 gInterpreter.Declare("""
@@ -91,75 +100,75 @@ gInterpreter.Declare("""
    using Vfloat = const ROOT::RVec<float>&;
    using Vint = const ROOT::RVec<int>&;
    auto trigger_sf_2016(Vfloat pt, Vfloat eta, float quant) {
-     std::map <int, std::vector<float>> abseta_pt_trig_sf2016 = %s;
-     std::map <int, std::vector<float>>::iterator it;
+     std::map <int, std::vector<std::vector<float>>> abseta_pt_trig_sf2016 = %s;
+     std::map <int, std::vector<std::vector<float>>>::iterator it;
      vector<float> vb;
      for (unsigned int i=0; i<eta.size(); ++i) {
        if (fabs(eta[i]) <= 0.9) {
          auto ptranges = abseta_pt_trig_sf2016[0];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 0.9 && fabs(eta[i]) <= 1.2) {
          auto ptranges = abseta_pt_trig_sf2016[1];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 1.2 && fabs(eta[i]) <= 2.1) {
          auto ptranges = abseta_pt_trig_sf2016[2];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 2.1 && fabs(eta[i]) <= 2.4) {
          auto ptranges = abseta_pt_trig_sf2016[3];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
@@ -178,75 +187,75 @@ gInterpreter.Declare("""
    using Vfloat = const ROOT::RVec<float>&;
    using Vint = const ROOT::RVec<int>&;
    auto trigger_sf_2016B(Vfloat pt, Vfloat eta, float quant) {
-     std::map <int, std::vector<float>> abseta_pt_trig_sf2016B = %s;
-     std::map <int, std::vector<float>>::iterator it;
+     std::map <int, std::vector<std::vector<float>>> abseta_pt_trig_sf2016B = %s;
+     std::map <int, std::vector<std::vector<float>>>::iterator it;
      vector<float> vb;
      for (unsigned int i=0; i<eta.size(); ++i) {
        if (fabs(eta[i]) <= 0.9) {
          auto ptranges = abseta_pt_trig_sf2016B[0];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 0.9 && fabs(eta[i]) <= 1.2) {
          auto ptranges = abseta_pt_trig_sf2016B[1];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 1.2 && fabs(eta[i]) <= 2.1) {
          auto ptranges = abseta_pt_trig_sf2016B[2];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 2.1 && fabs(eta[i]) <= 2.4) {
          auto ptranges = abseta_pt_trig_sf2016B[3];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
@@ -265,75 +274,75 @@ gInterpreter.Declare("""
    using Vfloat = const ROOT::RVec<float>&;
    using Vint = const ROOT::RVec<int>&;
    auto trigger_sf_2017(Vfloat pt, Vfloat eta, float quant) {
-     std::map <int, std::vector<float>> abseta_pt_trig_sf2017 = %s;
-     std::map <int, std::vector<float>>::iterator it;
+     std::map <int, std::vector<std::vector<float>>> abseta_pt_trig_sf2017 = %s;
+     std::map <int, std::vector<std::vector<float>>>::iterator it;
      vector<float> vb;
      for (unsigned int i=0; i<eta.size(); ++i) {
        if (fabs(eta[i]) <= 0.9) {
          auto ptranges = abseta_pt_trig_sf2017[0];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 0.9 && fabs(eta[i]) <= 1.2) {
          auto ptranges = abseta_pt_trig_sf2017[1];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 1.2 && fabs(eta[i]) <= 2.1) {
          auto ptranges = abseta_pt_trig_sf2017[2];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 2.1 && fabs(eta[i]) <= 2.4) {
          auto ptranges = abseta_pt_trig_sf2017[3];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
@@ -352,75 +361,75 @@ gInterpreter.Declare("""
    using Vfloat = const ROOT::RVec<float>&;
    using Vint = const ROOT::RVec<int>&;
    auto trigger_sf_2018(Vfloat pt, Vfloat eta, float quant) {
-     std::map <int, std::vector<float>> abseta_pt_trig_sf2018 = %s;
-     std::map <int, std::vector<float>>::iterator it;
+     std::map <int, std::vector<std::vector<float>>> abseta_pt_trig_sf2018 = %s;
+     std::map <int, std::vector<std::vector<float>>>::iterator it;
      vector<float> vb;
      for (unsigned int i=0; i<eta.size(); ++i) {
        if (fabs(eta[i]) <= 0.9) {
          auto ptranges = abseta_pt_trig_sf2018[0];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 0.9 && fabs(eta[i]) <= 1.2) {
          auto ptranges = abseta_pt_trig_sf2018[1];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 1.2 && fabs(eta[i]) <= 2.1) {
          auto ptranges = abseta_pt_trig_sf2018[2];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
        } else if (fabs(eta[i]) > 2.1 && fabs(eta[i]) <= 2.4) {
          auto ptranges = abseta_pt_trig_sf2018[3];
          if (pt[i] > quant && pt[i] <= 30.) {
-           vb.push_back(ptranges[0]);
+           vb.push_back(ptranges[0][1]);
          } else if (pt[i] >= 30. && pt[i] < 40.) {
-           vb.push_back(ptranges[1]);
+           vb.push_back(ptranges[1][1]);
          } else if (pt[i] >= 40. && pt[i] < 50.) {
-           vb.push_back(ptranges[2]);
+           vb.push_back(ptranges[2][1]);
          } else if (pt[i] >= 50. && pt[i] < 60.) {
-           vb.push_back(ptranges[3]);
+           vb.push_back(ptranges[3][1]);
          } else if (pt[i] >= 60. && pt[i] < 120.) {
-           vb.push_back(ptranges[4]);
+           vb.push_back(ptranges[4][1]);
          } else if (pt[i] >= 120. && pt[i] < 200.) {
-           vb.push_back(ptranges[5]);
+           vb.push_back(ptranges[5][1]);
          } else {
            vb.push_back(1.);
          }
@@ -431,46 +440,4 @@ gInterpreter.Declare("""
      return vb;
    }
 """ % dict_to_cpp2018)
-
-####################################################################################################################################################################################
-
-class trigger_mu_sf():
-    def __init__(self, *args, **kwargs):
-        #self.isUL = kwargs.pop("isUL")
-        self.isMC = kwargs.pop("isMC")
-        self.year = kwargs.pop("year")
-
-    def run(self, df):
-        if self.isMC:
-           if self.year == "2017":
-               df = df.Define('trigger_sf_mu_aux','trigger_sf_2017(Muon_pt, Muon_eta, 29.0)')
-           elif self.year == "2016":
-               df = df.Define('trigger_sf_mu_aux','trigger_sf_2016(Muon_pt, Muon_eta, 26.0)')
-           elif self.year == "2016B":
-               df = df.Define('trigger_sf_mu_aux','trigger_sf_2016B(Muon_pt, Muon_eta, 26.0)')
-           elif self.year == "2018":
-               df = df.Define('trigger_sf_mu_aux','trigger_sf_2018(Muon_pt, Muon_eta, 26.0)')
-
-        variables = ['trigger_sf_mu_aux']
-
-        branches = variables
-
-        return df
-
-def trigger_mu_sfRDF(**kwargs):
-    """
-    YAML sintaxis:
-
-    .. code-block:: yaml
-
-        codename:
-            name: jetVarRDF
-            path: Base.Modules.smearing
-            parameters:
-                isMC: self.dataset.process.isMC
-                year: self.config.year
-                isUL: self.dataset.has_tag('ul')
-                ¿¿ proc: self.dataset.process ??
-    """
-    return lambda: trigger_mu_sf(**kwargs)
 

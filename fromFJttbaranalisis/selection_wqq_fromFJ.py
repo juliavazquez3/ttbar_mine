@@ -177,6 +177,38 @@ el_pt["2018"]=35
 ###### Extra definitions ########
 #################################
 
+## Funciones para seleccionar muones y electrones secundarios
+gInterpreter.Declare("""
+      using Vbool = const ROOT::RVec<bool>&;
+      using Vfloat = const ROOT::RVec<float>&;
+      using Vint = const ROOT::RVec<int>&;
+      auto muonIndSec(UInt_t nmu, Vfloat pt, Vfloat eta, Vfloat iso, Vbool tID, Float_t cutpt, Vint mu_good) {
+            vector<int> vb;
+            bool cond_lep = true;
+            for (unsigned int i=0; i<nmu; ++i) {
+                if (mu_good.size()>0) cond_lep = i != mu_good[0];
+                if (pt[i]>15. && fabs(eta[i])<2.4 && iso[i]<0.2 && tID[i] && cond_lep){
+                        vb.push_back(i);
+                }
+            }
+            return vb;
+      };
+      auto elIndSec(UInt_t nmu, Vfloat pt, Vfloat eta, Vfloat iso, Vint cutB, Vbool mva80 , Vbool mva90, Float_t cutpt, Vint cutbased, Vint el_good) {
+            vector<int> vb;
+            bool cond_eta = false;
+            bool cond_lep = true;
+            for (unsigned int i=0; i<nmu; ++i) {
+                if (el_good.size()>0) cond_lep = i != el_good[0];
+                cond_eta = !(fabs(eta[i])>1.442 && fabs(eta[i])<1.556);
+                //if (pt[i]>cutpt && fabs(eta[i])<2.5 && iso[i]<0.15 && mva80[i]){
+                if (pt[i]>15. && fabs(eta[i])<2.4 && mva80[i] && cond_eta){
+                        vb.push_back(i);
+                }
+            }
+            return vb;
+      };
+""")
+
 ## Numero de muones dentro de un jet
 gInterpreter.Declare("""
       using Vbool = const ROOT::RVec<bool>&;
@@ -679,6 +711,24 @@ if mode == "mc":
                 df[s] = df[s].Define('btag_sf_aux2','(fabs(jet_bot2_flavourP) == 4 || fabs(jet_bot2_flavourP) == 5) ? btag_LOO_sf[JetGoodInd[JetBotInd[1]]] : btag_LOO_incl_sf[JetGoodInd[JetBotInd[1]]]')
                 df[s] = df[s].Define('btag_sf','btag_sf_aux1*btag_sf_aux2')
 
+#########################################
+######## Further corrections ############
+#########################################
+
+############ Trigger scale factors ##############
+
+from trigger_sf import *
+
+if mode == "mc":
+        for s in samples:
+                if s[-1]=="B":
+                       kwargs = {"year":s[-5:],"isMC":True, "isUL":True}
+                else:
+                       kwargs = {"year":s[-4:],"isMC":True, "isUL":True}
+                       #print(kwargs)
+                b= trigger_mu_sfRDF(**kwargs)
+                df[s] = b().run(df[s])
+
 #################################
 #######    GEN FILTER    ########
 #################################
@@ -737,12 +787,12 @@ for s in samples:
         ### Filters
         df[s] = df[s].Filter('jet_bot1_btag >'+str(cuts_btag[year][1]))
         df[s] = df[s].Filter('jet_bot2_btag >'+str(cuts_btag[year][0]))
-        df[s] = df[s].Filter('InvM_muon_jet >12').Filter('InvM_muon_jet > 110 || InvM_muon_jet < 70')
+        #df[s] = df[s].Filter('InvM_muon_jet >12').Filter('InvM_muon_jet > 110 || InvM_muon_jet < 70')
         df[s] = df[s].Filter('transverse_mass > 50')
         df_muon[s] = df[s].Filter('nMuonGood>0')
         df_electron[s] = df[s].Filter('nElectronGood >0')
         if args.type == "mc":
-               df_muon[s] = df_muon[s].Define('weightSSOS','btag_sf*musf_tight_id[MuonGoodInd[0]]*musf_tight_reliso[MuonGoodInd[0]]*puWeight*PUjetID_SF')
+               df_muon[s] = df_muon[s].Define('weightSSOS','btag_sf*musf_tight_id[MuonGoodInd[0]]*musf_tight_reliso[MuonGoodInd[0]]*puWeight*PUjetID_SF*trigger_sf_mu_aux[MuonGoodInd[0]]')
                df_electron[s] = df_electron[s].Define('weightSSOS','elesf_wp80iso[ElectronGoodInd[0]]*btag_sf*puWeight*PUjetID_SF')
         else:
                df_muon[s] = df_muon[s].Define('weightSSOS','1')

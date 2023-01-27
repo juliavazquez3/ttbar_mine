@@ -51,22 +51,26 @@ if not os.path.exists(plotdir):
 
 ## Open hists files
 
-if args.ssos: filePath = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/ssos/"
-else: filePath = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/"
+if args.ssos: filePath = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/SV/ssos/"
+else: filePath = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/SV/"
+
+if args.ssos: filePath2 = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/secondJF/SV/ssos/"
+else: filePath2 = "/nfs/cms/vazqueze/hists_ttbar/hists/fromJF/secondJF/SV/"
 
 if args.ssos: ssos_add = "SSOS"
 else: ssos_add = "" 
 
-term = "histfromJF_v1v2vBWP"
+term = "histfromJF_sv_v1v2vBWP"
 
-datayears = ["2016","2016B","2017","2018"]
-#datayears = ["2018","2016","2016B"]
+datayears = ["2018","2017","2016B","2016"]
+#datayears = ["2018"]
 
 samplesHT = ["ww","wjets_2_light","wjets_2_bottom","wjets_1_charm","wjets_1_doublecharm","wjets_2_light","wjets_2_bottom","wjets_2_charm","wjets_2_doublecharm",
         "wjets_3_light","wjets_3_bottom","wjets_3_charm","wjets_3_doublecharm","wjets_4_light","wjets_4_bottom","wjets_4_charm","wjets_4_doublecharm",
         "wjets_5_light","wjets_5_bottom","wjets_5_charm","wjets_5_doublecharm","wjets_6_light","wjets_6_bottom","wjets_6_charm","wjets_6_doublecharm",
         "wjets_7_light","wjets_7_bottom","wjets_7_charm","wjets_7_doublecharm","wjets_8_light","wjets_8_bottom","wjets_8_charm","wjets_8_doublecharm",
-        "ttbar_sl_charm","ttbar_sl_nocharm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets_1",
+        "ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+        "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets_1",
         "zjets_2","zjets_3","zjets_4","zjets_5","zjets_6","zjets_7","zjets_8","wz","st_1_charm","st_2_charm","st_3_charm","st_4_charm","st_1_nocharm",
         "st_2_nocharm","st_3_nocharm","st_4_nocharm","zz"]
 
@@ -80,6 +84,8 @@ for data_op in datayears:
 	for s in samplesHT:
 		if (s[0:6] == "wjets_") and isfile(filePath + term+ssos_add+"_"+s[0:7]+data_op+s[7:]+".root"):
 			histFile[data_op][s] = TFile.Open(filePath + term+ssos_add+"_"+s[0:7]+data_op+s[7:]+".root","READ")
+		elif s[0:14] == "ttbar_sl_charm" and isfile(filePath2 + term+ssos_add+"_"+s[0:8]+data_op+s[8:]+".root"):
+			histFile[data_op][s] = TFile.Open(filePath2 + term+ssos_add+"_"+s[0:8]+data_op+s[8:]+".root","READ")
 		elif s[0:6] == "ttbar_" and isfile(filePath + term+ssos_add+"_"+s[0:8]+data_op+s[8:]+".root"):
 			histFile[data_op][s] = TFile.Open(filePath + term+ssos_add+"_"+s[0:8]+data_op+s[8:]+".root","READ")
 		elif s[0:2] == "st" and isfile(filePath + term+ssos_add+"_"+s[0:4]+data_op+s[4:]+".root"):
@@ -96,59 +102,99 @@ for data_op in datayears:
 	# data files
 	histFileD[data_op]["M"] = TFile.Open(filePath + term+ssos_add+"_"+data_op+"M.root","READ")
 	histFileD[data_op]["E"] = TFile.Open(filePath + term+ssos_add+"_"+data_op+"E.root","READ")
-
+	#print(histFileD[data_op]["E"].ls())
 histNames = []
 
 histNames.append("nJetGood_M")
 histNames.append("nJetGood_E")
-histNames.append("nMuoninJet_M")
-histNames.append("nMuoninJet_E")
+histNames.append("nSV_M")
+histNames.append("nSV_E")
 histNames.append("nTau_M")
 histNames.append("nTau_E")
 histNames.append("second_muon_pt_M")
 histNames.append("second_muon_pt_E")
 histNames.append("second_electron_pt_M")
 histNames.append("second_electron_pt_E")
-histNames.append("jet_muon_pt_M")
-histNames.append("jet_muon_nmu_M")
-histNames.append("jet_muon_mass_M")
-histNames.append("jet_not_muon_pt_M")
-histNames.append("jet_muon_eta_M")
-histNames.append("jet_not_muon_eta_M")
-histNames.append("jet_notmuon_qgl_M")
-histNames.append("jet_notmuon_nmu_M")
-histNames.append("jet_notmuon_mass_M")
-histNames.append("jet_muon_pt_E")
-histNames.append("jet_muon_nmu_E")
-histNames.append("jet_muon_mass_E")
-histNames.append("jet_not_muon_pt_E")
-histNames.append("jet_muon_eta_E")
-histNames.append("jet_not_muon_eta_E")
-histNames.append("jet_notmuon_qgl_E")
-histNames.append("jet_notmuon_nmu_E")
-histNames.append("jet_notmuon_mass_E")
-#histNames.append("jet_muon_nmu_good_M")
-#histNames.append("jet_muon_nmu_good_E")
+histNames.append("jet_sv_pt_M")
+histNames.append("jet_not_sv_pt_M")
+histNames.append("jet_sv_eta_M")
+histNames.append("jet_not_sv_eta_M")
+histNames.append("jet_sv_pt_E")
+histNames.append("jet_not_sv_pt_E")
+histNames.append("jet_sv_eta_E")
+histNames.append("jet_not_sv_eta_E")
+histNames.append("jet_sv_mass_M")
+histNames.append("jet_sv_mass_E")
+histNames.append("jet_sv_nsv_good_M")
+histNames.append("jet_sv_nsv_good_E")
+histNames.append("jet_bot1_nsv_good_M")
+histNames.append("jet_bot1_nsv_good_E")
+histNames.append("jet_bot2_nsv_good_M")
+histNames.append("jet_bot2_nsv_good_E")
 histNames.append("lepton_pt_M")
 histNames.append("lepton_eta_M")
 histNames.append("lepton_pt_E")
 histNames.append("lepton_eta_E")
-histNames.append("muon_jet_pt_M")
-histNames.append("muon_jet_eta_M")
-histNames.append("muon_jet_pt_E")
-histNames.append("muon_jet_eta_E")
+histNames.append("sv_jet_pt_M")
+histNames.append("sv_jet_eta_M")
+histNames.append("sv_jet_pt_E")
+histNames.append("sv_jet_eta_E")
+histNames.append("sv_jet_ntracks_M")
+histNames.append("sv_jet_ntracks_E")
+histNames.append("sv_jet_mass_M")
+histNames.append("sv_jet_pangle_M")
+histNames.append("sv_jet_mass_E")
+histNames.append("sv_jet_pangle_E")
+histNames.append("sv_jet_chi_M")
+histNames.append("sv_jet_chi_E")
+histNames.append("sv_jet_ndof_M")
+histNames.append("sv_jet_ndof_E")
+histNames.append("sv_jet_charge_M")
+histNames.append("sv_jet_charge_E")
+histNames.append("sv_jet_xy_M")
+histNames.append("sv_jet_xy_E")
+histNames.append("sv_jet_r_M")
+histNames.append("sv_jet_r_E")
+histNames.append("sv_jet_sigxy_M")
+histNames.append("sv_jet_sigxy_E")
+histNames.append("sv_jet_sigr_M")
+histNames.append("sv_jet_sigr_E")
+histNames.append("sv_jet_relpt_M")
+histNames.append("sv_jet_relpt_E")
+histNames.append("sv_max_pt_M")
+histNames.append("sv_max_eta_M")
+histNames.append("sv_max_pt_E")
+histNames.append("sv_max_eta_E")
+histNames.append("sv_max_ntracks_M")
+histNames.append("sv_max_ntracks_E")
+histNames.append("sv_max_mass_M")
+histNames.append("sv_max_pangle_M")
+histNames.append("sv_max_mass_E")
+histNames.append("sv_max_pangle_E")
+histNames.append("sv_max_chi_M")
+histNames.append("sv_max_chi_E")
+histNames.append("sv_max_ndof_M")
+histNames.append("sv_max_ndof_E")
+histNames.append("sv_max_charge_M")
+histNames.append("sv_max_charge_E")
+histNames.append("my_tau_pt_M")
+histNames.append("my_tau_pt_E")
+histNames.append("my_tau_mass_M")
+histNames.append("my_tau_mass_E")
+#histNames.append("sv_max_xy_M")
+#histNames.append("sv_max_xy_E")
+#histNames.append("sv_max_r_M")
+#histNames.append("sv_max_r_E")
+#histNames.append("sv_max_sigxy_M")
+#histNames.append("sv_max_sigxy_E")
+#histNames.append("sv_max_sigr_M")
+#histNames.append("sv_max_sigr_E")
 histNames.append("InvM_2jets_M")
 histNames.append("InvM_2jets_E")
 histNames.append("InvM_jetM_lepM")
 histNames.append("InvM_jetM_lepE")
 histNames.append("deltaR_jetM_jetNM_M")
 histNames.append("deltaR_jetM_jetNM_E")
-histNames.append("deltapt_jetM_jetNM_M")
-histNames.append("deltapt_jetM_jetNM_E")
-histNames.append("deltaeta_jetM_jetNM_M")
-histNames.append("deltaeta_jetM_jetNM_E")
-histNames.append("deltaphi_jetM_jetNM_M")
-histNames.append("deltaphi_jetM_jetNM_E")
 histNames.append("MET_pt_M")
 histNames.append("MET_pt_E")
 histNames.append("transverse_massM")
@@ -163,29 +209,16 @@ histNames.append("EMN_jetM_E")
 histNames.append("EMC_jetM_E")
 histNames.append("EMtotal_jetM_M")
 histNames.append("EMtotal_jetM_E")
-histNames.append("InvM_muon_jet_M")
-histNames.append("muon_jet_mva_M")
-histNames.append("muon_jet_mva_E")
-histNames.append("muon_jet_relpt_M")
-histNames.append("muon_jet_relpt_E")
-histNames.append("muon_jet_sigxy_M")
-histNames.append("muon_jet_sigxy_E")
-histNames.append("muon_jet_sigz_M")
-histNames.append("muon_jet_sigz_E")
-histNames.append("muon_jet_xy_M")
-histNames.append("muon_jet_xy_E")
-histNames.append("muon_jet_z_M")
-histNames.append("muon_jet_z_E")
-histNames.append("muon_jet_sigr_M")
-histNames.append("muon_jet_sigr_E")
-histNames.append("muon_jet_iso_M")
-histNames.append("muon_jet_iso_E")
-histNames.append("my_tau_pt_M")
-histNames.append("my_tau_pt_E")
-histNames.append("my_tau_mass_M")
-histNames.append("my_tau_mass_E")
 histNames.append("SSOS_M")
 histNames.append("SSOS_E")
+histNames.append("jet_sv_btag_M")
+histNames.append("jet_sv_btag_E")
+histNames.append("jet_notsv_btag_M")
+histNames.append("jet_notsv_btag_E")
+histNames.append("jet_bot1_btag_M")
+histNames.append("jet_bot1_btag_E")
+histNames.append("jet_bot2_btag_M")
+histNames.append("jet_bot2_btag_E")
 histNames.append("pT_sum_M")
 histNames.append("pT_sum_E")
 histNames.append("pT_product_M")
@@ -200,10 +233,6 @@ histNames.append("pt_Wlep_M")
 histNames.append("pt_Wlep_E")
 histNames.append("pT_proy_M")
 histNames.append("pT_proy_E")
-histNames.append("deltaphi_MET_2jets_M")
-histNames.append("deltaphi_MET_2jets_E")
-histNames.append("deltaphi_lephad_M")
-histNames.append("deltaphi_lephad_E")
 histNames.append("deltaR_lep_jet1_M")
 histNames.append("deltaR_lep_jet2_M")
 histNames.append("deltaPhi_lep_jet1_M")
@@ -216,42 +245,28 @@ histNames.append("deltaPhi_lep_jet1_E")
 histNames.append("deltaPhi_lep_jet2_E")
 histNames.append("deltaEta_lep_jet1_E")
 histNames.append("deltaEta_lep_jet2_E")
-histNames.append("jet_bot1_btag_M")
-histNames.append("jet_bot1_btag_E")
-histNames.append("jet_bot2_btag_M")
-histNames.append("jet_bot2_btag_E")
-histNames.append("jet_muon_btag_M")
-histNames.append("jet_muon_btag_E")
-histNames.append("jet_notmuon_btag_M")
-histNames.append("jet_notmuon_btag_E")
-histNames.append("jet_notmuon_deeptagG_M")
-histNames.append("jet_notmuon_deeptagG_E")
-histNames.append("jet_notmuon_deeptagC_M")
-histNames.append("jet_notmuon_deeptagC_E")
-histNames.append("nMuon_nobot_M")
-histNames.append("nMuon_nobot_E")
 histNames.append("InvM_bot_farther_M")
 histNames.append("InvM_bot_farther_E")
 histNames.append("InvM_bot_closer_M")
 histNames.append("InvM_bot_closer_E")
+histNames.append("nSV_nobot_M")
+histNames.append("nSV_nobot_E")
 
-#histNames = ["nMuon_nobot_M","nMuon_nobot_E"]
-#histNames = ["jet_muon_coef_M","jet_muon_coef_E","jet_muon_ptresol_E","jet_muon_ptresol_M",
-#	"jet_muon_scalefactor_M","jet_muon_scalefactor_E"]
-
+#histNames = ["jet_sv_flavourH_M","jet_sv_flavourH_E","jet_notsv_flavourH_M","jet_notsv_flavourH_E",
+#       "jet_sv_flavourP_M","jet_sv_flavourP_E","jet_notsv_flavourP_M","jet_notsv_flavourP_E"]
+#histNames = ["InvM_2jets_M","InvM_2jets_E"]
+#histNames = ["pt_Wlep_M","pt_Wlep_E"]
 #histNames = [
-#       "jet_muon_flavourH_M","jet_muon_flavourH_E","jet_notmuon_flavourH_M","jet_notmuon_flavourH_E",
-#       "jet_muon_flavourP_M","jet_muon_flavourP_E","jet_notmuon_flavourP_M","jet_notmuon_flavourP_E",
-#       "btag_sf_M","btag_sf_E",
-#       "lep_id_sf_M","lep_id_sf_E","lep_id_lowpt_sf_M","lep_id_lowpt_sf_E","puWeight_M","puWeight_E",
-#       "PUjetID_SF_M","PUjetID_SF_E","lep_trig_sf_M","lep_trig_sf_E"
+#       "jet_sv_flavourH_M","jet_sv_flavourH_E","jet_notsv_flavourH_M","jet_notsv_flavourH_E",
+#       "jet_sv_flavourP_M","jet_sv_flavourP_E","jet_notsv_flavourP_M","jet_notsv_flavourP_E"
 #]
 
-not_rebin = ["nJetGood_M","nJetGood_E","nMuoninJet_M","nMuoninJet_E","jet_muon_nmu_M","jet_muon_nmu_E","SSOS_M","SSOS_E",
-       "nLooseLepton_M","nLooseLepton_E", "muon_jet_tight_M","muon_jet_tight_E","nTau_M","nTau_E",
-       "jet_muon_flavourH_M","jet_muon_flavourH_E","jet_notmuon_flavourH_M","jet_notmuon_flavourH_E",
-       "jet_muon_flavourP_M","jet_muon_flavourP_E","jet_notmuon_flavourP_M","jet_notmuon_flavourP_E","nMuon_nobot_M","nMuon_nobot_E",
-       "second_muon_pt_M","second_muon_pt_E","second_electron_pt_M","second_electron_pt_E"]
+not_rebin = ["nJetGood_M","nJetGood_E","SSOS_M","SSOS_E","nSV_E","nSV_M","sv_jet_ntracks_E","sv_jet_ntracks_M","sv_jet_pangle_E","sv_jet_pangle_M","sv_jet_ndof_E","sv_jet_ndof_M",
+        "sv_jet_charge_E","sv_jet_charge_M","sv_max_ntracks_E","sv_max_ntracks_M","sv_max_pangle_E","sv_max_pangle_M","sv_max_ndof_E","sv_max_ndof_M","sv_max_charge_E",
+        "sv_max_charge_M","nLooseLepton_M","nLooseLepton_E","nTau_M","nTau_E",
+        "jet_sv_flavourH_M","jet_sv_flavourH_E","jet_notsv_flavourH_M","jet_notsv_flavourH_E", 
+        "jet_sv_flavourP_M","jet_sv_flavourP_E","jet_notsv_flavourP_M","jet_notsv_flavourP_E","nSV_nobot_M","nSV_nobot_E",
+        "second_muon_pt_M","second_muon_pt_E","second_electron_pt_M","second_electron_pt_E"]
 
 samples = ["ww","wjets_1","wjets_2","wjets_3","wjets_4","wjets_5","wjets_6","wjets_7","wjets_8","ttbar_sl","ttbar_dl","ttbar_dh","zjets_1",
         "zjets_2","zjets_3","zjets_4","zjets_5","zjets_6","zjets_7","zjets_8","wz","zz","st_1","st_2","st_3","st_4"]
@@ -282,13 +297,16 @@ for data_op in samples_d:
 	files = json.load(open("/nfs/cms/vazqueze/ttbaranalisis/mcinfo"+data_op+".json"))
 	lumi[data_op] = {}
 	for p in samples:
-		#num_events = files[p]["events"] # Number of events
+		num_events = files[p]["events"] # Number of events
 		num_files = files[p]["files"] # Number of files
 		luminosity = files[p]["lumi"] # Luminosity
 		#print(files[p]["type"])
 		lumi[data_op][p] = luminosity
 
 for data_op in samples_d:
+	lumi[data_op]["ttbar_sl_charm_secondjetgluon"] = lumi[data_op]["ttbar_sl"]
+	lumi[data_op]["ttbar_sl_charm_secondjetstrange"] = lumi[data_op]["ttbar_sl"]
+	lumi[data_op]["ttbar_sl_charm_secondjetelse"] = lumi[data_op]["ttbar_sl"]
 	lumi[data_op]["ttbar_sl_charm"] = lumi[data_op]["ttbar_sl"]
 	lumi[data_op]["ttbar_sl_nocharm"] = lumi[data_op]["ttbar_sl"]
 	lumi[data_op]["ttbar_dl_charm"] = lumi[data_op]["ttbar_dl"]
@@ -356,7 +374,7 @@ for name in histNames:
   samples = ["ww","wjets_1_charm","wjets_1_doublecharm","wjets_1_bottom","wjets_1_light","wjets_2_charm","wjets_2_doublecharm","wjets_2_bottom","wjets_2_light",
         "wjets_3_charm","wjets_3_doublecharm","wjets_3_bottom","wjets_3_light","wjets_4_charm","wjets_4_doublecharm","wjets_4_bottom","wjets_4_light","wjets_5_charm","wjets_5_doublecharm","wjets_5_bottom","wjets_5_light",
         "wjets_6_charm","wjets_6_doublecharm","wjets_6_bottom","wjets_6_light","wjets_7_charm","wjets_7_doublecharm","wjets_7_bottom","wjets_7_light","wjets_8_charm","wjets_8_doublecharm","wjets_8_bottom","wjets_8_light",
-        "ttbar_sl_charm","ttbar_sl_nocharm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm",
+        "ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange","ttbar_sl_nocharm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm",
         "zjets_1","zjets_2","zjets_3","zjets_4","zjets_5","zjets_6","zjets_7","zjets_8","wz","zz","st_1_charm","st_2_charm","st_3_charm","st_4_charm","st_1_nocharm","st_2_nocharm","st_3_nocharm","st_4_nocharm"]
 
   ## HISTS
@@ -370,7 +388,9 @@ for name in histNames:
     for s in samples_foryear[data_op]:
       histss[data_op][s] = histFile[data_op][s].Get(name)
     if not args.nodata: hdataM[data_op] = histFileD[data_op]["M"].Get(name)
+    #print(hdataM[data_op].GetEntries())
     if not args.nodata: hdataE[data_op] = histFileD[data_op]["E"].Get(name)
+    #print(hdataE[data_op].GetEntries())
     if (args.qcd and name[-1] == "M") : histss[data_op]["QCD"] = histFile["QCD"][data_op].Get(name)
   
   samples_stc = {}
@@ -386,7 +406,6 @@ for name in histNames:
     lumi_data = lumi_d[data_op]
     for s in samples_foryear[data_op]:
       #print(s)
-      #print(data_op)
       if s != "QCD": histss[data_op][s].Scale(lumi_data/lumi[data_op][s])
       ## Fixing single top
     samples_stc[data_op] = [s for s in samples_foryear[data_op] if (s[0:2]=="st" and s[-6:]=="_charm")]
@@ -419,15 +438,20 @@ for name in histNames:
     for s in samples_zjets[data_op][1:]:
       histss[data_op]["zjets"].Add(histss[data_op][s])
 
-  samples = ["ww","ttbar_sl_nocharm","ttbar_sl_charm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz","zz",
+  samples = ["ww","ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+    "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz","zz",
     "st_charm","st_nocharm","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light"]
-  samples_foryear["2018"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
+  samples_foryear["2018"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+    "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
     "st_charm","st_nocharm","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light"]
-  samples_foryear["2017"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
+  samples_foryear["2017"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+    "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
     "st_charm","st_nocharm","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light"]
-  samples_foryear["2016"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
+  samples_foryear["2016"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+    "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
     "st_charm","st_nocharm","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light"]
-  samples_foryear["2016B"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
+  samples_foryear["2016B"] = ["ww","ttbar_sl_nocharm","ttbar_sl_charm_secondjetelse","ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetstrange",
+    "ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
     "st_charm","st_nocharm","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light"]
 
   histT = {}
@@ -439,10 +463,9 @@ for name in histNames:
 
   #print(histT)
   ###### Rearrange according to years used
-  if args.ssos: 
-    samples = ["ww","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light","st_nocharm","ttbar_sl_nocharm","st_charm","ttbar_sl_charm"]
-  else:
-    samples = ["ww","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz","wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light","st_nocharm","st_charm","ttbar_sl_nocharm","ttbar_sl_charm"]
+  samples = ["ww","ttbar_dl_charm","ttbar_dl_nocharm","ttbar_dh_charm","ttbar_dh_nocharm","zjets","wz",
+    "wjets_charm","wjets_doublecharm","wjets_bottom","wjets_light","st_nocharm","st_charm",
+    "ttbar_sl_charm_secondjetgluon","ttbar_sl_charm_secondjetelse","ttbar_sl_nocharm","ttbar_sl_charm_secondjetstrange"]
 
   if not args.nodata:
     histD = {}
@@ -469,7 +492,9 @@ for name in histNames:
   colors["wjets_charm"] = (155,152,204)
   colors["wjets_bottom"] = (255,0,127)
   colors["wjets_light"] = (255,153,204)
-  colors["ttbar_sl_charm"] = (204,255,153)
+  colors["ttbar_sl_charm_secondjetstrange"] = (204,255,153)
+  colors["ttbar_sl_charm_secondjetgluon"] = (102,102,0)
+  colors["ttbar_sl_charm_secondjetelse"] = (102,51,0)
   colors["ttbar_sl_nocharm"] = (120,154,86)
   colors["ttbar_dl_charm"] = (255,255,0)
   colors["ttbar_dl_nocharm"] = (255,153,51)
@@ -585,7 +610,9 @@ for name in histNames:
   leg.AddEntry(histT["st_nocharm"],"Single top, not charm","f")
   leg.AddEntry(histT["st_charm"],"Single top, charm","f")
   leg.AddEntry(histT["ttbar_sl_nocharm"],"Top antitop, no charm","f")
-  leg.AddEntry(histT["ttbar_sl_charm"],"Top antitop, charm","f")
+  leg.AddEntry(histT["ttbar_sl_charm_secondjetstrange"],"Top antitop, charm strange","f")
+  leg.AddEntry(histT["ttbar_sl_charm_secondjetgluon"],"Top antitop, charm gluon","f")
+  leg.AddEntry(histT["ttbar_sl_charm_secondjetelse"],"Top antitop, charm else","f")
   if (args.qcd and name[-1] == "M"): leg.AddEntry(histT["QCD"],"QCD","f")
   if args.stack and not args.nodata: leg.AddEntry(data, "Data" ,"lep")
   leg.Draw()

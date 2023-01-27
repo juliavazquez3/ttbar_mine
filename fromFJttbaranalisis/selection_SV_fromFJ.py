@@ -181,6 +181,38 @@ el_pt["2018"]=35
 ###### Extra definitions ########
 #################################
 
+## Funciones para seleccionar muones y electrones secundarios
+gInterpreter.Declare("""
+      using Vbool = const ROOT::RVec<bool>&;
+      using Vfloat = const ROOT::RVec<float>&;
+      using Vint = const ROOT::RVec<int>&;
+      auto muonIndSec(UInt_t nmu, Vfloat pt, Vfloat eta, Vfloat iso, Vbool tID, Float_t cutpt, Vint mu_good) {
+            vector<int> vb;
+            bool cond_lep = true;
+            for (unsigned int i=0; i<nmu; ++i) {
+                if (mu_good.size()>0) cond_lep = i != mu_good[0];
+                if (pt[i]>15. && fabs(eta[i])<2.4 && iso[i]<0.2 && tID[i] && cond_lep){
+                        vb.push_back(i);
+                }
+            }
+            return vb;
+      };
+      auto elIndSec(UInt_t nmu, Vfloat pt, Vfloat eta, Vfloat iso, Vint cutB, Vbool mva80 , Vbool mva90, Float_t cutpt, Vint cutbased, Vint el_good) {
+            vector<int> vb;
+            bool cond_eta = false;
+            bool cond_lep = true;
+            for (unsigned int i=0; i<nmu; ++i) {
+                if (el_good.size()>0) cond_lep = i != el_good[0];
+                cond_eta = !(fabs(eta[i])>1.442 && fabs(eta[i])<1.556);
+                //if (pt[i]>cutpt && fabs(eta[i])<2.5 && iso[i]<0.15 && mva80[i]){
+                if (pt[i]>15. && fabs(eta[i])<2.4 && mva80[i] && cond_eta){
+                        vb.push_back(i);
+                }
+            }
+            return vb;
+      };
+""")
+
 ## Numero de SV dentro de un jet
 gInterpreter.Declare("""
       using Vbool = const ROOT::RVec<bool>&;
@@ -320,8 +352,8 @@ gInterpreter.Declare("""
                 for (unsigned int i=0; i<nmu; ++i){
                         cond = ROOT::VecOps::DeltaR(mu_eta[i],eta[good[0]],mu_phi[i],phi[good[0]]) < 0.4;
                         if (mu_good.size() > 0) cond1 = mu_good[0] != i;
-                        //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0] && mu_iso[i] > 0.2){
-                        if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0]){
+                        if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0] && mu_iso[i] > 0.2){
+                        //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0]){
                                 ind = good[0];
                                 ptM = mu_pt[i];
                         }
@@ -333,8 +365,8 @@ gInterpreter.Declare("""
                                 cond = ROOT::VecOps::DeltaR(mu_eta[i],eta[good[j]],mu_phi[i],phi[good[j]]) < 0.4;
                                 if (mu_good.size() > 0) cond1 = mu_good[0] != i;
                                 if (good.size() > 2) condb = (good[j] != good[jetbotind[0]] && good[j] != good[jetbotind[1]]);
-                                //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && mu_iso[i] > 0.2 && condb){
-                                if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && condb){
+                                if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && mu_iso[i] > 0.2 && condb){
+                                //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && condb){
                                         ind = good[j];
                                         ptM = mu_pt[i];
                                         ptJ = pt[good[j]];
@@ -359,8 +391,8 @@ gInterpreter.Declare("""
 		for (unsigned int i=0; i<nmu; ++i){
 			cond = ROOT::VecOps::DeltaR(mu_eta[i],eta[good[0]],mu_phi[i],phi[good[0]]) < 0.4;
 			if (mu_good.size() > 0) cond1 = mu_good[0] != i;
-                        //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0] && mu_iso[i] > 0.2){
-			if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0]){
+                        if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0] && mu_iso[i] > 0.2){
+			//if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[0]){
                                 ind = i;
 				ptM = mu_pt[i];
 			}
@@ -372,8 +404,8 @@ gInterpreter.Declare("""
                         	cond = ROOT::VecOps::DeltaR(mu_eta[i],eta[good[j]],mu_phi[i],phi[good[j]]) < 0.4;
 				if (mu_good.size() > 0) cond1 = mu_good[0] != i;
                                 if (good.size() > 2) condb = (good[j] != good[jetbotind[0]] && good[j] != good[jetbotind[1]]);
-                                //if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && mu_iso[i] > 0.2 && condb){
-                        	if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && condb){
+                                if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && mu_iso[i] > 0.2 && condb){
+                        	//if(cond && mu_pt[i] > ptM && cond1 && mu_jetid[i]==good[j] && condb){
                                         ind = i;
                                 	ptM = mu_pt[i];
                                         ptJ = pt[good[j]];
@@ -914,6 +946,20 @@ if mode == "mc":
                 b= branchingfractions_SV_corRDF(**kwargs)
                 df[s] = b().run(df[s])
 
+############ Trigger scale factors ##############
+
+from trigger_sf import *
+
+if mode == "mc":
+        for s in samples:
+                if s[-1]=="B":
+                       kwargs = {"year":s[-5:],"isMC":True, "isUL":True}
+                else:
+                       kwargs = {"year":s[-4:],"isMC":True, "isUL":True}
+                       #print(kwargs)
+                b= trigger_mu_sfRDF(**kwargs)
+                df[s] = b().run(df[s])
+
 #################################
 #######    GEN FILTER    ########
 #################################
@@ -978,7 +1024,7 @@ for s in samples:
         df_muon[s] = df[s].Filter('nMuonGood>0')
         df_electron[s] = df[s].Filter('nElectronGood >0')
         if args.type == "mc":
-               df_muon[s] = df_muon[s].Define('weightSSOS_final','weight_aux*btag_sf*musf_tight_id[MuonGoodInd[0]]*musf_tight_reliso[MuonGoodInd[0]]*puWeight*PUjetID_SF')
+               df_muon[s] = df_muon[s].Define('weightSSOS_final','weight_aux*btag_sf*musf_tight_id[MuonGoodInd[0]]*musf_tight_reliso[MuonGoodInd[0]]*puWeight*PUjetID_SF*trigger_sf_mu_aux[MuonGoodInd[0]]')
                df_electron[s] = df_electron[s].Define('weightSSOS_final','weight_aux*elesf_wp80iso[ElectronGoodInd[0]]*btag_sf*puWeight*PUjetID_SF')
         else:
                df_muon[s] = df_muon[s].Define('weightSSOS_final','weight_aux')
